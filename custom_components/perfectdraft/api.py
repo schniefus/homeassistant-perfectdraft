@@ -14,7 +14,7 @@ class PerfectDraftAPI:
         self.refresh_token = None
     
     def get_recaptcha_token(self):
-        recaptcha_page_url = "https://your-site-with-recaptcha.com/recaptcha.html"
+        recaptcha_page_url = "https://matthewcky2k.github.io/recaptcha-page/recaptcha.htm"
         response = requests.get(recaptcha_page_url)
         soup = BeautifulSoup(response.text, 'html.parser')
         
