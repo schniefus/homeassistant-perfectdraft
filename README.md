@@ -10,13 +10,4 @@ This custom component integrates the PerfectDraft API with Home Assistant, allow
 
 ## Configuration
 
-In your `configuration.yaml`:
-
-```yaml
-sensor:
-  - platform: perfectdraft
-    email: YOUR_EMAIL
-    password: YOUR_PASSWORD
-    x_api_key: YOUR_API_KEY
-    recaptcha_site_key: YOUR_RECAPTCHA_SITE_KEY
-    recaptcha_secret_key: YOUR_RECAPTCHA_SECRET_KEY
+Go to Configuration > Devices & Services > Add Integration, then find perfectdraft in the list.
