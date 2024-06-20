@@ -15,7 +15,7 @@ class PerfectDraftAPI:
     
     def get_recaptcha_token(self):
         # Replace this URL with the URL of your page that has the reCAPTCHA v3 integration
-        recaptcha_page_url = "https://your-site-with-recaptcha.com"
+        recaptcha_page_url = "https://matthewcky2k.github.io/recaptcha-page/recaptcha.htm"
         response = requests.get(recaptcha_page_url)
         soup = BeautifulSoup(response.text, 'html.parser')
         
