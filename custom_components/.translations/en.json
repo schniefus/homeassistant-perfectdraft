@@ -1,1 +1,8 @@
+{
+  "component.perfectdraft.title": "PerfectDraft",
+  "component.perfectdraft.config.email": "Email",
+  "component.perfectdraft.config.password": "Password",
+  "component.perfectdraft.config.x_api_key": "API Key",
+  "component.perfectdraft.config.recaptcha_token": "Recaptcha Token"
+}
 
