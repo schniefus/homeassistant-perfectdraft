@@ -5,7 +5,7 @@
   "documentation": "https://github.com/matthewcky2k/homeassistant-perfectdraft",
   "dependencies": [],
   "codeowners": ["@matthewcky2k"],
-  "requirements": ["requests"]
+  "requirements": ["requests", "beautifulsoup4"],
   "config_flow": true
 }
 
