@@ -18,4 +18,5 @@ sensor:
     email: YOUR_EMAIL
     password: YOUR_PASSWORD
     x_api_key: YOUR_API_KEY
-    recaptcha_token: YOUR_RECAPTCHA_TOKEN
+    recaptcha_site_key: YOUR_RECAPTCHA_SITE_KEY
+    recaptcha_secret_key: YOUR_RECAPTCHA_SECRET_KEY
