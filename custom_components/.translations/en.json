@@ -1,8 +1,17 @@
 {
-  "component.perfectdraft.title": "PerfectDraft",
-  "component.perfectdraft.config.email": "Email",
-  "component.perfectdraft.config.password": "Password",
-  "component.perfectdraft.config.x_api_key": "API Key",
-  "component.perfectdraft.config.recaptcha_token": "Recaptcha Token"
+  "config": {
+    "step": {
+      "user": {
+        "title": "PerfectDraft Setup",
+        "data": {
+          "email": "Email",
+          "password": "Password",
+          "x_api_key": "API Key",
+          "recaptcha_site_key": "reCAPTCHA Site Key",
+          "recaptcha_secret_key": "reCAPTCHA Secret Key"
+        }
+      }
+    }
+  }
 }
 
