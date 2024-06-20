@@ -3,7 +3,7 @@ from datetime import timedelta
 
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, TEMP_CELSIUS
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 import homeassistant.helpers.config_validation as cv
@@ -13,7 +13,8 @@ from .perfectdraft_api import PerfectDraftAPI
 _LOGGER = logging.getLogger(__name__)
 
 CONF_API_KEY = "x_api_key"
-CONF_RECAPTCHA_TOKEN = "recaptcha_token"
+CONF_RECAPTCHA_SITE_KEY = "recaptcha_site_key"
+CONF_RECAPTCHA_SECRET_KEY = "recaptcha_secret_key"
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=10)
 
@@ -21,17 +22,19 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_EMAIL): cv.string,
     vol.Required(CONF_PASSWORD): cv.string,
     vol.Required(CONF_API_KEY): cv.string,
-    vol.Required(CONF_RECAPTCHA_TOKEN): cv.string,
+    vol.Required(CONF_RECAPTCHA_SITE_KEY): cv.string,
+    vol.Required(CONF_RECAPTCHA_SECRET_KEY): cv.string,
 })
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     email = config[CONF_EMAIL]
     password = config[CONF_PASSWORD]
     x_api_key = config[CONF_API_KEY]
-    recaptcha_token = config[CONF_RECAPTCHA_TOKEN]
+    recaptcha_site_key = config[CONF_RECAPTCHA_SITE_KEY]
+    recaptcha_secret_key = config[CONF_RECAPTCHA_SECRET_KEY]
 
-    api = PerfectDraftAPI(email, password, x_api_key)
-    if not api.authenticate(recaptcha_token):
+    api = PerfectDraftAPI(email, password, x_api_key, recaptcha_site_key, recaptcha_secret_key)
+    if not api.authenticate():
         _LOGGER.error("Authentication failed")
         return
 
@@ -75,4 +78,3 @@ class PerfectDraftMachineSensor(Entity):
                 'pours_since_startup': machine_info.get('pours_since_startup'),
                 'serial_number': machine_info.get('serial_number'),
             }
-
