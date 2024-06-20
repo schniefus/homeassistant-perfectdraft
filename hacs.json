@@ -1,0 +1,13 @@
+{
+  "name": "PerfectDraft",
+  "content_in_root": false,
+  "domains": ["sensor"],
+  "country": "Global",
+  "iot_class": "Cloud Polling",
+  "homeassistant": "2023.6.0",
+  "render_readme": true,
+  "zip_release": false,
+  "filename": "custom_components/perfectdraft",
+  "version": "1.0.0",
+  "hide_default_branch": false
+}
