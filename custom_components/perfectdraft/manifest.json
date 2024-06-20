@@ -1,1 +1,10 @@
+{
+  "domain": "perfectdraft",
+  "name": "PerfectDraft",
+  "version": "1.0",
+  "documentation": "https://github.com/your-username/homeassistant-perfectdraft",
+  "dependencies": [],
+  "codeowners": ["@your-github-username"],
+  "requirements": ["requests"]
+}
 
