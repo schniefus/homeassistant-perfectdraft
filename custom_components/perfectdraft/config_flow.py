@@ -1,4 +1,3 @@
-import logging
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -6,8 +5,7 @@ from homeassistant.helpers import config_validation as cv
 
 from .const import DOMAIN
 
-_LOGGER = logging.getLogger(__name__)
-
+@config_entries.HANDLERS.register(DOMAIN)
 class PerfectDraftConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for PerfectDraft."""
 
@@ -19,16 +17,15 @@ class PerfectDraftConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             return self.async_create_entry(title="PerfectDraft", data=user_input)
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema({
-                vol.Required("email"): cv.string,
-                vol.Required("password"): cv.string,
-                vol.Required("x_api_key"): cv.string,
-                vol.Required("recaptcha_site_key"): cv.string,
-                vol.Required("recaptcha_secret_key"): cv.string,
-            })
-        )
+        data_schema = vol.Schema({
+            vol.Required("email"): cv.string,
+            vol.Required("password"): cv.string,
+            vol.Required("x_api_key"): cv.string,
+            vol.Required("recaptcha_site_key"): cv.string,
+            vol.Required("recaptcha_secret_key"): cv.string,
+        })
+
+        return self.async_show_form(step_id="user", data_schema=data_schema)
 
     @staticmethod
     @callback
@@ -54,7 +51,4 @@ class PerfectDraftOptionsFlow(config_entries.OptionsFlow):
             vol.Required("recaptcha_secret_key", default=self.config_entry.data.get("recaptcha_secret_key")): cv.string,
         })
 
-        return self.async_show_form(
-            step_id="init",
-            data_schema=options_schema
-        )
+        return self.async_show_form(step_id="init", data_schema=options_schema)
