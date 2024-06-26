@@ -1,40 +1,36 @@
 import logging
-from datetime import timedelta
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import Throttle
-from .perfectdraft_api import PerfectDraftAPI
+from .api import PerfectDraftAPI
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=10)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the PerfectDraft sensors."""
     email = config_entry.data.get("email")
     password = config_entry.data.get("password")
     x_api_key = config_entry.data.get("x_api_key")
-    recaptcha_site_key = config_entry.data.get("recaptcha_site_key")
-    recaptcha_secret_key = config_entry.data.get("recaptcha_secret_key")
+    recaptcha_token = config_entry.data.get("recaptcha_token")
 
-    api = PerfectDraftAPI(email, password, x_api_key, recaptcha_site_key, recaptcha_secret_key)
-    if not api.authenticate():
-        _LOGGER.error("Authentication failed")
-        return
+    api = PerfectDraftAPI(email, password, x_api_key, recaptcha_token)
+    api.authenticate()
+    status = api.get_status()
+    machine_id = status['machine_id']
+    machine_details = api.get_machine_details(machine_id)
 
-    sensors = []
-    user_info = api.get_user_info()
-    if user_info and 'machines' in user_info:
-        for machine in user_info['machines']:
-            sensors.append(PerfectDraftMachineSensor(api, machine['id'], machine['name']))
+    sensors = [
+        PerfectDraftSensor(api, "Temperature", machine_details['temperature']),
+        PerfectDraftSensor(api, "Pressure", machine_details['pressure']),
+        PerfectDraftSensor(api, "Door Status", machine_details['door_status'])
+    ]
+
     async_add_entities(sensors, True)
 
-class PerfectDraftMachineSensor(Entity):
-    def __init__(self, api, machine_id, name):
+class PerfectDraftSensor(Entity):
+    def __init__(self, api, name, state):
         self._api = api
-        self._machine_id = machine_id
         self._name = name
-        self._state = None
-        self._attributes = {}
+        self._state = state
 
     @property
     def name(self):
@@ -44,20 +40,20 @@ class PerfectDraftMachineSensor(Entity):
     def state(self):
         return self._state
 
-    @property
-    def extra_state_attributes(self):
-        return self._attributes
-
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def async_update(self):
-        machine_info = self._api.get_machine_info(self._machine_id)
-        if machine_info:
-            self._state = machine_info.get('temperature')
-            self._attributes = {
-                'pressure': machine_info.get('pressure'),
-                'eco_mode': machine_info.get('eco_mode'),
-                'door_open': machine_info.get('door_open'),
-                'last_pour_duration': machine_info.get('last_pour_duration'),
-                'pours_since_startup': machine_info.get('pours_since_startup'),
-                'serial_number': machine_info.get('serial_number'),
-            }
+        """Fetch new state data for the sensor."""
+        # Re-authenticate if necessary
+        if not self._api.access_token:
+            self._api.authenticate()
+        
+        # Fetch the latest machine details
+        status = self._api.get_status()
+        machine_id = status['machine_id']
+        machine_details = self._api.get_machine_details(machine_id)
+
+        if self._name == "Temperature":
+            self._state = machine_details['temperature']
+        elif self._name == "Pressure":
+            self._state = machine_details['pressure']
+        elif self._name == "Door Status":
+            self._state = machine_details['door_status']
